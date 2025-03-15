@@ -99,6 +99,29 @@ func (r *packageRepository) GetByID(id string) (*domain.Package, error) {
 	return &pkg, nil
 }
 
+// GetByName returns a package by name
+func (r *packageRepository) GetByName(name string) (*domain.Package, error) {
+	var pkg domain.Package
+
+	query := `
+	SELECT
+		id
+		, name
+		, number_of_sessions
+		, type
+		, price
+	FROM
+		packages
+	`
+
+	err := r.db.Get(&pkg, query, name)
+	if err != nil {
+		log.Error().Err(err).Str("name", name).Msg("failed to get package by name")
+		return nil, fmt.Errorf("failed to get package by name")
+	}
+	return &pkg, nil
+}
+
 // GetByType implements domain.PackageRepository.
 func (r *packageRepository) GetByType(pkgType domain.PackageType) ([]domain.Package, error) {
 	var packages []domain.Package

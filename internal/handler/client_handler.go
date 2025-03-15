@@ -49,6 +49,7 @@ func (h *ClientHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 	if client == nil {
 		http.Error(w, "Client not found", http.StatusNotFound)
+		return
 	}
 
 	respondwithJSON(w, http.StatusOK, client)

@@ -33,6 +33,7 @@ type PackageInput struct {
 type PackageRepository interface {
 	GetAll() ([]Package, error)
 	GetByID(id string) (*Package, error)
+	GetByName(name string) (*Package, error)
 	GetByType(pkgType PackageType) ([]Package, error)
 	Create(pkg *Package) error
 	Update(pkg *Package) error
@@ -43,8 +44,9 @@ type PackageRepository interface {
 type PackageService interface {
 	GetAll() ([]Package, error)
 	GetByID(id string) (*Package, error)
+	GetByName(name string) (*Package, error)
 	GetByType(pkgType PackageType) ([]Package, error)
-	Create(pkg *Package) error
-	Update(pkg *Package) error
+	Create(input PackageInput) error
+	Update(id string, input PackageInput) (*Package, error)
 	Delete(id string) error
 }
