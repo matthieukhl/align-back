@@ -122,6 +122,8 @@ func run() {
 			r.Get("/{id}", clientHandler.GetByID)
 			r.Put("/{id}", clientHandler.Update)
 			r.Delete("/{id}", clientHandler.Delete)
+			r.Put("/low-group-credit", clientHandler.GetLowGroupCredits)
+			r.Put("/low-private-credits", clientHandler.GetLowPrivateCredits)
 		})
 
 		// Packages endpoints
