@@ -5,7 +5,6 @@ import "time"
 // Client represents a pilates client
 type Client struct {
 	ID           string    `json:"id" db:"id"`
-	FullName     string    `json:"full_name" db:"full_name"`
 	FirstName    string    `json:"firstname" db:"firstname"`
 	LastName     string    `json:"lastname" db:"lastname"`
 	Phone        string    `json:"phone" db:"phone"`
@@ -39,7 +38,7 @@ type ClientRepository interface {
 	GetAll() ([]Client, error)
 	GetByID(id string) (*Client, error)
 	GetByEmail(email string) (*Client, error)
-	GetLowCredits(threshold int) (*Client, error)
+	GetLowCredits(threshold int) ([]Client, error)
 	Create(client *Client) error
 	Update(client *Client) error
 	Delete(id string) error

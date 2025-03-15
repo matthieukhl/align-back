@@ -1,14 +1,13 @@
 -- Create the Pilates Management Database
-CREATE DATABASE IF NOT EXISTS pilates_management;
-USE pilates_management;
+CREATE DATABASE IF NOT EXISTS align;
+USE align;
 
 -- Enable foreign key constraints
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Clients Table
-CREATE TABLE IF NOT EXISTS clients (
-    id VARCHAR(36) PRIMARY KEY,
-    full_name VARCHAR(255) NOT NULL,
+CREATE TABLE IF NOT EXISTS clients2 (
+    id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     firstname VARCHAR(100) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
@@ -17,7 +16,7 @@ CREATE TABLE IF NOT EXISTS clients (
     street_name VARCHAR(255),
     city VARCHAR(100),
     zip_code VARCHAR(20),
-    country VARCHAR(100),
+    country VARCHAR(100) DEFAULT 'France',
     credits INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -25,7 +24,7 @@ CREATE TABLE IF NOT EXISTS clients (
 
 -- Packages Table
 CREATE TABLE IF NOT EXISTS packages (
-    id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     number_of_sessions INT NOT NULL,
     type ENUM('GROUP', 'PRIVATE') NOT NULL,
@@ -36,7 +35,7 @@ CREATE TABLE IF NOT EXISTS packages (
 
 -- Classes Table
 CREATE TABLE IF NOT EXISTS classes (
-    id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     location ENUM('CLAIRVIVRE', 'CUBJAC') NOT NULL,
     type ENUM('GROUP', 'PRIVATE') NOT NULL,
@@ -47,7 +46,7 @@ CREATE TABLE IF NOT EXISTS classes (
 
 -- Schedule Table
 CREATE TABLE IF NOT EXISTS schedule (
-    id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     class_id VARCHAR(36) NOT NULL,
     capacity INT NOT NULL DEFAULT 10,
     class_datetime DATETIME NOT NULL,
@@ -58,7 +57,7 @@ CREATE TABLE IF NOT EXISTS schedule (
 
 -- Appointments Table (renamed from appointment for consistency)
 CREATE TABLE IF NOT EXISTS appointments (
-    id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     schedule_id VARCHAR(36) NOT NULL,
     client_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -70,7 +69,7 @@ CREATE TABLE IF NOT EXISTS appointments (
 
 -- Billing Table
 CREATE TABLE IF NOT EXISTS billings (
-    id VARCHAR(36) PRIMARY KEY,
+    id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     client_id VARCHAR(36) NOT NULL,
     package_id VARCHAR(36) NOT NULL,
     amount INT NOT NULL DEFAULT 1,
@@ -92,14 +91,14 @@ CREATE INDEX idx_appointments_schedule ON appointments(schedule_id);
 CREATE INDEX idx_billings_client ON billings(client_id);
 
 -- Insert some sample data
-INSERT INTO clients (id, full_name, firstname, lastname, phone, email) VALUES
-(UUID(), 'Jane Smith', 'Jane', 'Smith', '+33123456789', 'jane.smith@example.com'),
-(UUID(), 'John Doe', 'John', 'Doe', '+33987654321', 'john.doe@example.com');
+INSERT INTO clients (full_name, firstname, lastname, phone, email) VALUES
+('Jane Smith', 'Jane', 'Smith', '+33123456789', 'jane.smith@example.com'),
+('John Doe', 'John', 'Doe', '+33987654321', 'john.doe@example.com');
 
-INSERT INTO packages (id, name, number_of_sessions, type, price) VALUES
-(UUID(), '10 Group Sessions', 10, 'GROUP', 150.00),
-(UUID(), '5 Private Sessions', 5, 'PRIVATE', 250.00);
+INSERT INTO packages (name, number_of_sessions, type, price) VALUES
+('10 Group Sessions', 10, 'GROUP', 150.00),
+('5 Private Sessions', 5, 'PRIVATE', 250.00);
 
-INSERT INTO classes (id, name, location, type, equipment) VALUES
-(UUID(), 'Morning Pilates', 'CLAIRVIVRE', 'GROUP', 'Mat, resistance bands'),
-(UUID(), 'Reformer Session', 'CUBJAC', 'PRIVATE', 'Reformer machine');
+INSERT INTO classes (name, location, type, equipment) VALUES
+('Morning Pilates', 'CLAIRVIVRE', 'GROUP', 'Mat, resistance bands'),
+('Reformer Session', 'CUBJAC', 'PRIVATE', 'Reformer machine');
