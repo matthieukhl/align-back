@@ -56,21 +56,22 @@ func (r *clientRepository) GetByID(id string) (*domain.Client, error) {
 // Create creates a new client
 func (r *clientRepository) Create(client *domain.Client) error {
 	query := `
-	INSERT INTO clients (
-		id
-		, firstname
-		, lastname
-		, phone
-		, email
-		, street_number
-		, street_name
-		, city
-		, zip_code
-		, country
-		, credits)
+	INSERT INTO
+		clients (
+			id
+			, firstname
+			, lastname
+			, phone
+			, email
+			, street_number
+			, street_name
+			, city
+			, zip_code
+			, country
+		)
 	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
-	_, err := r.db.Exec(query, client.FirstName, client.LastName, client.Phone, client.Email, client.StreetNumber, client.StreetName, client.City, client.ZipCode, client.Country, client.Credits)
+	_, err := r.db.Exec(query, client.FirstName, client.LastName, client.Phone, client.Email, client.StreetNumber, client.StreetName, client.City, client.ZipCode, client.Country)
 	if err != nil {
 		log.Error().Err(err).Interface("client", client).Msg("failed to create client")
 		return fmt.Errorf("failed to create client: %w", err)
@@ -94,11 +95,12 @@ func (r *clientRepository) Update(client *domain.Client) error {
 		, city = ?
 		, zip_code = ?
 		, country = ?
-		, credits = ?
+		, group_credits = ?
+		, private_credits = ?
 	WHERE
 		id = ?`
 
-	_, err := r.db.Exec(query, client.FirstName, client.LastName, client.Phone, client.Email, client.StreetNumber, client.StreetName, client.City, client.ZipCode, client.Country, client.Credits, client.ID)
+	_, err := r.db.Exec(query, client.FirstName, client.LastName, client.Phone, client.Email, client.StreetNumber, client.StreetName, client.City, client.ZipCode, client.Country, client.GroupCredits, client.PrivateCredits, client.ID)
 	if err != nil {
 		log.Error().Err(err).Interface("client", client).Msg("failed to update client")
 		return fmt.Errorf("failed to update client: %w", err)
@@ -146,7 +148,7 @@ func (r *clientRepository) GetByEmail(email string) (*domain.Client, error) {
 }
 
 // GetLowCredits returns clients with credits below a threshold
-func (r *clientRepository) GetLowCredits(threshold int) ([]domain.Client, error) {
+func (r *clientRepository) GetLowGroupCredits(threshold int) ([]domain.Client, error) {
 	var clients []domain.Client
 
 	query := `
@@ -155,9 +157,9 @@ func (r *clientRepository) GetLowCredits(threshold int) ([]domain.Client, error)
 	FROM
 		clients
 	WHERE
-		credits <= ?
+		group_credits <= ?
 	ORDER BY  
-		credits ASC, lastname, firstname
+		group_credits ASC, lastname, firstname
 	`
 
 	err := r.db.Select(&clients, query, threshold)
@@ -165,8 +167,35 @@ func (r *clientRepository) GetLowCredits(threshold int) ([]domain.Client, error)
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		log.Error().Err(err).Int("threshold", threshold).Msg("failed to get clients with low credits")
-		return nil, fmt.Errorf("failed to get clients with low credits: %w", err)
+		log.Error().Err(err).Int("threshold", threshold).Msg("failed to get clients with low group credits")
+		return nil, fmt.Errorf("failed to get clients with low group credits: %w", err)
+	}
+
+	return clients, nil
+}
+
+// GetLowCredits returns clients with private credits below a threshold
+func (r *clientRepository) GetLowPrivateCredits(threshold int) ([]domain.Client, error) {
+	var clients []domain.Client
+
+	query := `
+	SELECT
+		*
+	FROM
+		clients
+	WHERE
+		private_credits <= ?
+	ORDER BY  
+		private_credits ASC, lastname, firstname
+	`
+
+	err := r.db.Select(&clients, query, threshold)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		log.Error().Err(err).Int("threshold", threshold).Msg("failed to get clients with low private credits")
+		return nil, fmt.Errorf("failed to get clients with low private credits: %w", err)
 	}
 
 	return clients, nil

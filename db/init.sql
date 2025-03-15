@@ -6,7 +6,7 @@ USE align;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Clients Table
-CREATE TABLE IF NOT EXISTS clients2 (
+CREATE TABLE IF NOT EXISTS clients (
     id VARCHAR(36) DEFAULT (UUID()) PRIMARY KEY,
     firstname VARCHAR(100) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS clients2 (
     city VARCHAR(100),
     zip_code VARCHAR(20),
     country VARCHAR(100) DEFAULT 'France',
-    credits INT DEFAULT 0,
+    group_credits INT DEFAULT 0,
+    private_credits INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
