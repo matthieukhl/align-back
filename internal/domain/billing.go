@@ -28,11 +28,12 @@ type BillingWithDetails struct {
 
 // BillingInput is used for creating/updating billings
 type BillingInput struct {
-	ClientID    string     `json:"client_id" validate:"required,uuid"`
-	PackageID   string     `json:"package_id" validate:"required,uuid"`
-	Amount      int        `json:"amount" validate:"required,min=1"`
-	Price       float64    `json:"price" validate:"required,min=0"`
-	PaymentDate *time.Time `json:"payment_date"`
+	ClientID    string    `json:"client_id" validate:"required,uuid"`
+	PackageID   string    `json:"package_id" validate:"required,uuid"`
+	Amount      int       `json:"amount" validate:"required,min=1"`
+	Price       float64   `json:"price" validate:"required,min=0"`
+	Credits     int       `json:"credits" validate:"required,min=1"`
+	PaymentDate time.Time `json:"payment_date"`
 }
 
 // BillingRepository defines methods for billing persistence
@@ -56,7 +57,7 @@ type BillingService interface {
 	GetRecent(limit int) ([]Billing, error)
 	GetWithDetails(id string) ([]BillingWithDetails, error)
 	GetAllWithDetails() ([]BillingWithDetails, error)
-	Create(billing *Billing) error
-	Update(billing *Billing) error
+	Create(input BillingInput) error
+	Update(id string, billing BillingInput) (*Billing, error)
 	Delete(id string) error
 }

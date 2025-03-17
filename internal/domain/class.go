@@ -43,6 +43,7 @@ type ClassInput struct {
 type ClassRepository interface {
 	GetAll() ([]Class, error)
 	GetByID(id string) (*Class, error)
+	GetByName(name string) (*Class, error)
 	GetByType(classType ClassType) ([]Class, error)
 	GetByLocation(location Location) ([]Class, error)
 	Create(class *Class) error
@@ -56,7 +57,7 @@ type ClassService interface {
 	GetByID(id string) (*Class, error)
 	GetByType(classType ClassType) ([]Class, error)
 	GetByLocation(location Location) ([]Class, error)
-	Create(class *Class) error
-	Update(class *Class) error
+	Create(input ClassInput) error
+	Update(id string, input ClassInput) (*Class, error)
 	Delete(id string) error
 }

@@ -13,7 +13,7 @@ type ClientHandler struct {
 	service domain.ClientService
 }
 
-// NewClientHandler create a new client handler
+// NewClientHandler creates a new client handler
 func NewClientHandler(service domain.ClientService) *ClientHandler {
 	return &ClientHandler{
 		service: service,
