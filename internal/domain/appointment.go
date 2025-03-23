@@ -33,7 +33,7 @@ type AppointmentInput struct {
 // ApointmentRepository defines methods for appointment persistence
 type AppointmentRepository interface {
 	GetAll() ([]Appointment, error)
-	GetByID(id string) (Appointment, error)
+	GetByID(id string) (*Appointment, error)
 	GetByClient(clientID string) ([]Appointment, error)
 	GetBySchedule(scheduleID string) ([]Appointment, error)
 	GetByClientAndSchedule(clientID, scheduleID string) (*Appointment, error)
